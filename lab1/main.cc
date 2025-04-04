@@ -5,6 +5,9 @@
 #include <iterator>
 #include <algorithm>
 #include <string>
+#include <map>
+
+
 
 std::vector<std::string> init_file(std::string const &filename)
 {
@@ -14,52 +17,53 @@ std::vector<std::string> init_file(std::string const &filename)
     }
 
     std::ifstream ifs(filename);
-    std::vector<std::string> words {
+    std::vector<std::string> words { //Chat.gpt helped with finding right algorithm
                 std::istream_iterator<std::string>(ifs),
                 std::istream_iterator<std::string>()
     };
+
+    std::transform(words.begin(), words.end(), words.begin(),
+    [](std::string &word)
+    {
+        std::transform(word.begin(), word.end(), word.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+        return word;
+    });
     
 
     return words;
 }
 
-// std::vector<std::string> get_args(int argc, char* argv[])
-// {
-//     std::vector<std::string> arguments(argv + 1, argv + argc);
 
-//     if (arguments.size() == 0)
-//     {
-//         throw std::runtime_error("Too few arguments given!");
-//     }
+std::map<std::string, int> convert_to_map(std::vector<std::string> const &words)
+{
+    std::map<std::string, int> map_of_words{};
 
-//     std::string filename { arguments[0] };
 
-//     return arguments;
-// }
+    std::transform(words.begin(), words.end(), std::inserter(map_of_words, map_of_words.end()),
+               [&words](const std::string &s) 
+               { return std::make_pair(s, std::count(words.begin(), words.end(), s)); });
 
-// std::map<std::string, int> convert_to_map(std::ifstream const &file)
-// {
-//     std::map<std::string, int> words {};
+    
 
-//     words.insert()
+    return map_of_words;
 
-//     //words.insert(file.begin(), file.end(), file.getline(words, file, " "));
+}
 
-//     return words;
+void frequency(std::vector<std::string> const &words)
+{
+    std::map<std::string, int> map_of_words { convert_to_map(words) };
 
-// }
+    // std::sort(map_of_words.begin(), map_of_words.end(),
+    // [](auto p1, auto p2){return p1.second > p2.second;}); -----------NEED TO FIX
 
-// void frequency(std::ifstream const &file)
-// {
-//     std::map<std::string, int> words { convert_to_map(file) };
+    for ( const auto& [word, count]: map_of_words)
+    {
 
-//     for ( const auto& [word, count]: words)
-//     {
+        std::cout << word << " : " << count << std::endl;;
+    }
 
-//         std::cout << word << " : " << count << std::endl;;
-//     }
-
-// }
+}
 
 
 std::vector<std::string> get_args(int argc, char* argv[])
@@ -91,18 +95,18 @@ int main(int argc, char* argv[])
     std::vector<std::string> arguments { get_args(argc, argv )};
 
     std::string filename { arguments[0] };
-    std::vector<std::string> container{ init_file(filename) };
+    std::vector<std::string> words{ init_file(filename) };
 
     for (std::string arg : arguments)
     {
         if (arg == "--print")
         {
-            print(container);
+            print(words);
         }
 
         else if (arg == "--frequency")
         {
-            //frequency(file);
+            frequency(words);
         }
 
 
