@@ -61,6 +61,21 @@ std::vector<std::string> init_file(std::string const &filename)
 
 // }
 
+
+std::vector<std::string> get_args(int argc, char* argv[])
+{
+
+    if (argc == 1)
+    {
+        throw std::runtime_error("Too few args given!!");
+
+    }
+
+    std::vector<std::string> arguments(argv + 1, argv + argc);
+
+    return arguments;
+}
+
 void print(std::vector<std::string> const &words)
 {
     for (const auto& word : words)
@@ -72,9 +87,10 @@ void print(std::vector<std::string> const &words)
 
 int main(int argc, char* argv[])
 {
-    std::vector<std::string> arguments(argv + 1, argv + argc);
-    std::string filename { arguments[0] };
 
+    std::vector<std::string> arguments { get_args(argc, argv )};
+
+    std::string filename { arguments[0] };
     std::vector<std::string> container{ init_file(filename) };
 
     for (std::string arg : arguments)
