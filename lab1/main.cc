@@ -21,14 +21,6 @@ std::vector<std::string> init_file(std::string const &filename)
                 std::istream_iterator<std::string>(ifs),
                 std::istream_iterator<std::string>()
     };
-
-    std::transform(words.begin(), words.end(), words.begin(),
-    [](std::string &word)
-    {
-        std::transform(word.begin(), word.end(), word.begin(),
-            [](unsigned char c) { return std::tolower(c); });
-        return word;
-    });
     
 
     return words;
@@ -50,19 +42,38 @@ std::map<std::string, int> convert_to_map(std::vector<std::string> const &words)
 
 }
 
+std::string find_longest_word(std::vector<std::string> words) 
+{
+    return *std::max_element(words.begin(), words.end(),
+        [](const auto& a, const auto& b)
+    {
+        return a.size() < b.size();
+    });
+}
+
 void frequency(std::vector<std::string> const &words)
 {
-    std::map<std::string, int> map_of_words { convert_to_map(words) };
+    std::map<std::string, int> map_of_words{ convert_to_map(words) };
+    std::vector<std::pair<std::string, int>> wordpairs {};
 
-    // std::sort(map_of_words.begin(), map_of_words.end(),
-    // [](auto p1, auto p2){return p1.second > p2.second;}); -----------NEED TO FIX
-
-    for ( const auto& [word, count]: map_of_words)
+    std::copy(map_of_words.begin(), map_of_words.end(), std::back_inserter(wordpairs));
+    std::sort(wordpairs.begin(), wordpairs.end(), 
+    [](std::pair<std::string, int> a, std::pair<std::string, int> b)
     {
+        return a.second > b.second;
+    });
 
-        std::cout << word << " : " << count << std::endl;;
+    std::string longest_word = find_longest_word(words);
+
+    for(auto &[word, count] : wordpairs)
+    {
+        std::cout << std::setw(longest_word.size())
+                  << std::fixed   
+                  << word
+                  << ' ' 
+                  << count 
+                  << '\n';
     }
-
 }
 
 
