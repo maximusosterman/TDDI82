@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <string>
 #include <map>
+#include <iomanip>
 
 
 
@@ -50,6 +51,25 @@ std::string find_longest_word(std::vector<std::string> words)
         return a.size() < b.size();
     });
 }
+
+void table(std::vector<std::string> const &words)
+{
+    std::map<std::string, int> map_of_words = convert_to_map(words);
+
+    std::string longest_word = find_longest_word(words);
+
+    for(auto &[word, count] : map_of_words)
+    {
+        std::cout << std::setw(longest_word.size())
+                  << std::left
+                  << std::fixed
+                  << word
+                  << ' ' 
+                  << count 
+                  << '\n';
+    }
+}
+
 
 void frequency(std::vector<std::string> const &words)
 {
@@ -119,7 +139,11 @@ int main(int argc, char* argv[])
         {
             frequency(words);
         }
-
+        
+        else if (arg == "--table")
+        {
+            table(words);
+        }
 
     }
 
