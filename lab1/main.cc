@@ -70,12 +70,9 @@ void table(std::vector<std::string> const &words)
     }
 }
 
-std::vector<std::string> remove(std::vector<std::string> &words, std::string const &word_to_remove)
+void remove(std::vector<std::string> &words, std::string const &word_to_remove)
 {
-
     words.erase(std::remove(words.begin(),words.end(), word_to_remove), words.end());
-    return words;
-
 }
 
 
@@ -104,6 +101,20 @@ void frequency(std::vector<std::string> const &words)
     }
 }
 
+void substitute(std::vector<std::string> &words, std::string const &old_word, std::string const &new_word)
+{
+
+    std::transform(words.begin(), words.end(), words.begin(),
+            [&old_word, &new_word] (std::string current)
+            {
+                
+                if (current == old_word)
+                {
+                    return new_word;
+                }
+                return current;
+            });
+}
 
 std::vector<std::string> get_args(int argc, char* argv[])
 {
@@ -168,11 +179,31 @@ int main(int argc, char* argv[])
             table(words);
         }
 
-        else if (flag == "--remove" && parameter != "")
+        else if (flag == "--remove")
         {
-            words = remove(words, parameter);
+            remove(words, parameter);
         }
 
+        else if (flag == "--substitute")
+        {
+
+            std::string old_word {};
+            std::string new_word {};
+
+
+            if (parameter.find('+') != std::string::npos)
+            {
+                old_word = parameter.substr(0, parameter.find('+'));
+                new_word = parameter.substr(parameter.find('+')+1, parameter.size());
+            }
+            else
+            {
+                throw std::runtime_error("Too few args given for substitue flag!!");
+            }
+
+            substitute(words, old_word, new_word);
+
+        }
     }
 
 
