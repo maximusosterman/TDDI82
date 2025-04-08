@@ -8,8 +8,6 @@
 #include <map>
 #include <iomanip>
 
-
-
 std::vector<std::string> init_file(std::string const &filename)
 {
     if (!std::filesystem::exists(filename))
@@ -23,7 +21,6 @@ std::vector<std::string> init_file(std::string const &filename)
                 std::istream_iterator<std::string>()
     };
     
-
     return words;
 }
 
@@ -32,12 +29,9 @@ std::map<std::string, int> convert_to_map(std::vector<std::string> const &words)
 {
     std::map<std::string, int> map_of_words{};
 
-
     std::transform(words.begin(), words.end(), std::inserter(map_of_words, map_of_words.end()),
                [&words](const std::string &s) 
                { return std::make_pair(s, std::count(words.begin(), words.end(), s)); });
-
-    
 
     return map_of_words;
 
@@ -45,29 +39,44 @@ std::map<std::string, int> convert_to_map(std::vector<std::string> const &words)
 
 std::string find_longest_word(std::vector<std::string> words) 
 {
-    return *std::max_element(words.begin(), words.end(),
-        [](const auto& a, const auto& b)
+    auto longest_word { std::max_element(words.begin(), words.end(),
+        [](std::string const &a, std::string const &b)
     {
         return a.size() < b.size();
-    });
+    })};
+
+    if (longest_word != words.end())
+    {
+        return *longest_word;
+    }
+
+    return "";
 }
 
-void table(std::vector<std::string> const &words)
+void print_pairs(std::vector<std::pair<std::string, int>> const& pairs, std::string const &longest_word)
 {
-    std::map<std::string, int> map_of_words = convert_to_map(words);
-
-    std::string longest_word = find_longest_word(words);
-
-    for(auto &[word, count] : map_of_words)
+    for(auto &[word, count] : pairs)
     {
         std::cout << std::setw(longest_word.size())
-                  << std::left
-                  << std::fixed
                   << word
                   << ' ' 
                   << count 
                   << '\n';
     }
+}
+
+void table(std::vector<std::string> const &words)
+{
+    std::map<std::string, int> map_of_words = convert_to_map(words);
+    std::vector<std::pair<std::string, int>> wordpairs {};
+
+    std::copy(map_of_words.begin(), map_of_words.end(), std::back_inserter(wordpairs));
+
+    std::string longest_word = find_longest_word(words);
+
+    std::cout << std::fixed << std::left;
+
+    print_pairs(wordpairs, longest_word);
 }
 
 void remove(std::vector<std::string> &words, std::string const &word_to_remove)
@@ -90,15 +99,9 @@ void frequency(std::vector<std::string> const &words)
 
     std::string longest_word = find_longest_word(words);
 
-    for(auto &[word, count] : wordpairs)
-    {
-        std::cout << std::setw(longest_word.size())
-                  << std::fixed   
-                  << word
-                  << ' ' 
-                  << count 
-                  << '\n';
-    }
+    std::cout << std::fixed << std::right;
+
+    print_pairs(wordpairs, longest_word);
 }
 
 void substitute(std::vector<std::string> &words, std::string const &old_word, std::string const &new_word)
@@ -118,11 +121,10 @@ void substitute(std::vector<std::string> &words, std::string const &old_word, st
 
 std::vector<std::string> get_args(int argc, char* argv[])
 {
-
     if (argc == 1)
     {
         throw std::runtime_error("Too few args given!!");
-
+        
     }
 
     std::vector<std::string> arguments(argv + 1, argv + argc);
@@ -141,7 +143,6 @@ void print(std::vector<std::string> const &words)
 
 int main(int argc, char* argv[])
 {
-
     std::vector<std::string> arguments { get_args(argc, argv )};
 
     std::string filename { arguments[0] };
@@ -150,6 +151,11 @@ int main(int argc, char* argv[])
     for (std::string arg : arguments)
     {
 
+        if (arg == filename)
+        {
+            continue;
+        }
+
         std::string flag {};
         std::string parameter {};
 
@@ -157,10 +163,10 @@ int main(int argc, char* argv[])
         {
             flag = arg.substr(0, arg.find('='));
             parameter = arg.substr(arg.find('=')+1, arg.size());
-            
         }
 
-        else {
+        else
+        {
             flag = arg;
         }
 
@@ -204,11 +210,11 @@ int main(int argc, char* argv[])
             substitute(words, old_word, new_word);
 
         }
+
+        else {
+            throw std::runtime_error({"Invalid flag: " + flag});
+        }
     }
-
-
-
-
 
     return 0;
 }
