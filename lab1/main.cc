@@ -70,6 +70,14 @@ void table(std::vector<std::string> const &words)
     }
 }
 
+std::vector<std::string> remove(std::vector<std::string> &words, std::string const &word_to_remove)
+{
+
+    words.erase(std::remove(words.begin(),words.end(), word_to_remove), words.end());
+    return words;
+
+}
+
 
 void frequency(std::vector<std::string> const &words)
 {
@@ -130,19 +138,39 @@ int main(int argc, char* argv[])
 
     for (std::string arg : arguments)
     {
-        if (arg == "--print")
+
+        std::string flag {};
+        std::string parameter {};
+
+        if (arg.find('=') != std::string::npos)
+        {
+            flag = arg.substr(0, arg.find('='));
+            parameter = arg.substr(arg.find('=')+1, arg.size());
+            
+        }
+
+        else {
+            flag = arg;
+        }
+
+        if (flag == "--print")
         {
             print(words);
         }
 
-        else if (arg == "--frequency")
+        else if (flag == "--frequency")
         {
             frequency(words);
         }
         
-        else if (arg == "--table")
+        else if (flag == "--table")
         {
             table(words);
+        }
+
+        else if (flag == "--remove" && parameter != "")
+        {
+            words = remove(words, parameter);
         }
 
     }
