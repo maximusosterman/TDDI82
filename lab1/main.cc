@@ -10,13 +10,13 @@
 
 
 
-//   Information om komplettering: 
-//   Kompletteringen kan gälla hela filen och alla filer i labben, 
-//   så får ni komplettering på en sak, kan samma sak förekomma på 
-//   fler ställen utan att jag skrivit det. 
-// 
-//   Komplettering lämnas in via sendlab inom 5 arbetsdagar. 
-//   Har ni frågor om kompletteringen kan ni maila mig. 
+//   Information om komplettering:
+//   Kompletteringen kan gälla hela filen och alla filer i labben,
+//   så får ni komplettering på en sak, kan samma sak förekomma på
+//   fler ställen utan att jag skrivit det.
+//
+//   Komplettering lämnas in via sendlab inom 5 arbetsdagar.
+//   Har ni frågor om kompletteringen kan ni maila mig.
 
 //Komplettering: std::fixed används för flyttal. ---- DONE
 
@@ -32,24 +32,29 @@
 
 //Komplettering: Initiera variabler med måsvingar -----DONE
 
-//Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate called after...”.  
+//Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate called after...”. DONE
 
 //Kommentar: Felaktig hantering av undantag. Undantag bör endast kastas i exceptionella fall.
 
 
 std::vector<std::string> init_file(std::string const &filename)
 {
+
     if (!std::filesystem::exists(filename))
     {
         throw std::runtime_error("File does not exists!");
     }
 
+
+    /*
+        Funktionen tar in ifs som filnamn och sedan iterear den igenom ifs från början till slut med hjälp av en strängström som läser av alla ord och sparar det i en vector words.
+    */
     std::ifstream ifs(filename);
     std::vector<std::string> words { //Chat.gpt helped with finding right algorithm
                 std::istream_iterator<std::string>(ifs),
                 std::istream_iterator<std::string>()
     };
-    
+
     return words;
 }
 
@@ -59,14 +64,14 @@ std::map<std::string, int> convert_to_map(std::vector<std::string> const &words)
     std::map<std::string, int> map_of_words{};
 
     std::transform(words.begin(), words.end(), std::inserter(map_of_words, map_of_words.end()),
-               [&words](const std::string &s) 
+               [&words](const std::string &s)
                { return std::make_pair(s, std::count(words.begin(), words.end(), s)); });
 
     return map_of_words;
 
 }
 
-std::string find_longest_word(std::vector<std::string> const &words) 
+std::string find_longest_word(std::vector<std::string> const &words)
 {
     auto longest_word { std::max_element(words.begin(), words.end(),
         [](std::string const &a, std::string const &b)
@@ -88,8 +93,8 @@ void print_pairs(std::vector<std::pair<std::string, int>> const& pairs, std::str
     {
         std::cout << std::setw(longest_word.size())
                   << word
-                  << ' ' 
-                  << count 
+                  << ' '
+                  << count
                   << '\n';
     }
 }
@@ -107,7 +112,7 @@ void print_table_view(std::vector<std::string> const &words, bool frequency = fa
 
     if(frequency)
     {
-        std::sort(wordpairs.begin(), wordpairs.end(), 
+        std::sort(wordpairs.begin(), wordpairs.end(),
         [](std::pair<std::string, int> const &a, std::pair<std::string, int> const &b)
         {
             return a.second > b.second;
@@ -117,7 +122,7 @@ void print_table_view(std::vector<std::string> const &words, bool frequency = fa
     }
 
     print_pairs(wordpairs, longest_word);
-} 
+}
 
 void table(std::vector<std::string> const &words)
 {
@@ -140,7 +145,7 @@ void substitute(std::vector<std::string> &words, std::string const &old_word, st
     std::transform(words.begin(), words.end(), words.begin(),
             [&old_word, &new_word] (std::string const &current)
             {
-                
+
                 if (current == old_word)
                 {
                     return new_word;
@@ -154,7 +159,7 @@ std::vector<std::string> get_args(int argc, char* argv[])
     if (argc == 1)
     {
         throw std::runtime_error("Too few args given!!");
-        
+
     }
 
     std::vector<std::string> arguments(argv + 1, argv + argc);
@@ -173,78 +178,90 @@ void print(std::vector<std::string> const &words)
 
 int main(int argc, char* argv[])
 {
-    std::vector<std::string> arguments { get_args(argc, argv )};
-
-    std::string filename { arguments[0] };
-    std::vector<std::string> words{ init_file(filename) };
-
-    for (const auto& arg : arguments)
+    try
     {
+        std::vector<std::string> arguments { get_args(argc, argv )};
 
-        if (arg == filename)
-        {
-            continue;
-        }
+        std::string filename { arguments[0] };
+        std::vector<std::string> words{ init_file(filename) };
 
-        std::string flag {};
-        std::string parameter {};
-
-        if (arg.find('=') != std::string::npos)
-        {
-            flag = arg.substr(0, arg.find('='));
-            parameter = arg.substr(arg.find('=')+1, arg.size());
-        }
-
-        else
-        {
-            flag = arg;
-        }
-
-        if (flag == "--print")
-        {
-            print(words);
-        }
-
-        else if (flag == "--frequency")
-        {
-            frequency(words);
-        }
-        
-        else if (flag == "--table")
-        {
-            table(words);
-        }
-
-        else if (flag == "--remove")
-        {
-            remove(words, parameter);
-        }
-
-        else if (flag == "--substitute")
+        for (const auto& arg : arguments)
         {
 
-            std::string old_word {};
-            std::string new_word {};
-
-
-            if (parameter.find('+') != std::string::npos)
+            if (arg == filename)
             {
-                old_word = parameter.substr(0, parameter.find('+'));
-                new_word = parameter.substr(parameter.find('+')+1, parameter.size());
+                continue;
             }
+
+            std::string flag {};
+            std::string parameter {};
+
+            if (arg.find('=') != std::string::npos)
+            {
+                flag = arg.substr(0, arg.find('='));
+                parameter = arg.substr(arg.find('=')+1, arg.size());
+            }
+
             else
             {
-                throw std::runtime_error("Too few args given for substitue flag!!");
+                flag = arg;
             }
 
-            substitute(words, old_word, new_word);
+            if (flag == "--print")
+            {
+                print(words);
+            }
 
-        }
+            else if (flag == "--frequency")
+            {
+                frequency(words);
+            }
 
-        else {
-            throw std::runtime_error({"Invalid flag: " + flag});
+            else if (flag == "--table")
+            {
+                table(words);
+            }
+
+            else if (flag == "--remove")
+            {
+                remove(words, parameter);
+            }
+
+            else if (flag == "--substitute")
+            {
+
+                std::string old_word {};
+                std::string new_word {};
+
+
+                if (parameter.find('+') != std::string::npos)
+                {
+                    old_word = parameter.substr(0, parameter.find('+'));
+                    new_word = parameter.substr(parameter.find('+')+1, parameter.size());
+                }
+                else
+                {
+                    throw std::runtime_error("Too few args given for substitue flag!!");
+                }
+
+                substitute(words, old_word, new_word);
+
+            }
+
+            else
+            {
+                throw std::runtime_error({"Invalid flag: " + flag});
+            }
         }
     }
+
+        catch (const std::exception& e)
+        {
+                std::cerr << "Error: " << e.what() << '\n';
+                return 1;
+        }
+
+
 
     return 0;
 }
