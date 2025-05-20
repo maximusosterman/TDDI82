@@ -18,20 +18,20 @@ CountedPtr<T>::CountedPtr()
 template <typename T>
 CountedPtr<T>::CountedPtr(CountedPtr<T> const& copied_ptr)
             : ptr {copied_ptr.ptr}, count {copied_ptr.count}
-{}
+{
+    increase_count();
+}
 
 template <typename T>
 CountedPtr<T>::~CountedPtr()
 {
-    delete ptr;
-    delete count;
+    decrease_count();
 }
 
 template <typename T>
 CountedPtr<T>::CountedPtr(CountedPtr<T>&& moved_ptr)
             : ptr {moved_ptr.ptr}, count {moved_ptr.count}
 {
-    decrease_count();
     moved_ptr.ptr = nullptr;
     moved_ptr.count = nullptr;
 }
@@ -39,11 +39,15 @@ CountedPtr<T>::CountedPtr(CountedPtr<T>&& moved_ptr)
 template <typename T>
 void CountedPtr<T>::decrease_count()
 {
-    ++(*count);
-    if (count == 0)
-    {
-        delete this;
+    if (count) {
+        --(*count);
+        if (*count == 0) {
+            delete ptr;
+            delete count;
+        }
     }
+    ptr = nullptr;
+    count = nullptr;
 }
 
 template <typename T>
@@ -96,13 +100,13 @@ CountedPtr<T>& CountedPtr<T>::operator=(std::nullptr_t)
 }
 
 template <typename T>
-CountedPtr<T>& CountedPtr<T>::operator*()
+T& CountedPtr<T>::operator*() const
 {
     return *ptr;
 }
 
 template <typename T>
-CountedPtr<T>* CountedPtr<T>::operator->()
+T* CountedPtr<T>::operator->() const
 {
     return ptr;
 }
@@ -112,6 +116,7 @@ T* CountedPtr<T>::get()
 {
     return ptr;
 }
+
 template <typename T>
 int CountedPtr<T>::use_count()
 {
@@ -132,5 +137,17 @@ bool CountedPtr<T>::operator==(CountedPtr<T> rhs)
 template <typename T>
 bool CountedPtr<T>::operator!=(CountedPtr<T> rhs)
 {
-    return !(this == rhs);
+    return !(this->get() == rhs.get());
+}
+
+template <typename T>
+bool CountedPtr<T>::operator==(T* rhs)
+{
+    return (this->get() == rhs);
+}
+
+template <typename T>
+bool CountedPtr<T>::operator!=(T* rhs)
+{
+    return !(this->get() == rhs);
 }

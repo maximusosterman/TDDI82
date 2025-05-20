@@ -16,10 +16,13 @@ public:
     CountedPtr<T>& operator=(const CountedPtr<T>& other);
     CountedPtr<T>& operator=(CountedPtr<T>&& other);
     CountedPtr<T>& operator=(std::nullptr_t n_ptr);
-    CountedPtr<T>& operator*();
-    CountedPtr<T>* operator->();
+    T& operator*() const;
+    T* operator->() const;
     bool operator==(CountedPtr<T> rhs);
     bool operator!=(CountedPtr<T> rhs);
+
+    bool operator==(T* rhs);
+    bool operator!=(T* rhs);
 
     T* get();
     int use_count();
