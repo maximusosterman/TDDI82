@@ -18,9 +18,7 @@ CountedPtr<T>::CountedPtr()
 template <typename T>
 CountedPtr<T>::CountedPtr(CountedPtr<T> const& copied_ptr)
             : ptr {copied_ptr.ptr}, count {copied_ptr.count}
-{
-    increase_count();
-}
+{}
 
 template <typename T>
 CountedPtr<T>::~CountedPtr()
@@ -34,13 +32,14 @@ CountedPtr<T>::CountedPtr(CountedPtr<T>&& moved_ptr)
             : ptr {moved_ptr.ptr}, count {moved_ptr.count}
 {
     decrease_count();
-    delete moved_ptr;
+    moved_ptr.ptr = nullptr;
+    moved_ptr.count = nullptr;
 }
 
 template <typename T>
 void CountedPtr<T>::decrease_count()
 {
-    count--;
+    ++(*count);
     if (count == 0)
     {
         delete this;
@@ -50,9 +49,88 @@ void CountedPtr<T>::decrease_count()
 template <typename T>
 void CountedPtr<T>::increase_count()
 {
-    count++;
+    ++(*count);
     if (count == 0)
     {
         delete this;
     }
+}
+
+template <typename T>
+CountedPtr<T>& CountedPtr<T>::operator=(const CountedPtr<T>& other)
+{
+    if (this != &other) {
+        decrease_count();
+
+        ptr = other.ptr;
+        count = other.count;
+
+        if (count)
+            ++(*count);
+    }
+    return *this;
+}
+
+template <typename T>
+CountedPtr<T>& CountedPtr<T>::operator=(CountedPtr<T>&& other)
+{
+    if (this != &other) {
+        decrease_count();
+
+        ptr = other.ptr;
+        count = other.count;
+
+        other.ptr = nullptr;
+        other.count = nullptr;
+    }
+    return *this;
+}
+
+template <typename T>
+CountedPtr<T>& CountedPtr<T>::operator=(std::nullptr_t)
+{
+    decrease_count();
+    ptr = nullptr;
+    count = nullptr;
+    return *this;
+}
+
+template <typename T>
+CountedPtr<T>& CountedPtr<T>::operator*()
+{
+    return *ptr;
+}
+
+template <typename T>
+CountedPtr<T>* CountedPtr<T>::operator->()
+{
+    return ptr;
+}
+
+template <typename T>
+T* CountedPtr<T>::get()
+{
+    return ptr;
+}
+template <typename T>
+int CountedPtr<T>::use_count()
+{
+    if (count == nullptr)
+    {
+        return 0;
+    }
+
+    return *count;
+}
+
+template <typename T>
+bool CountedPtr<T>::operator==(CountedPtr<T> rhs)
+{
+    return (this->get() == rhs.get());
+}
+
+template <typename T>
+bool CountedPtr<T>::operator!=(CountedPtr<T> rhs)
+{
+    return !(this == rhs);
 }
