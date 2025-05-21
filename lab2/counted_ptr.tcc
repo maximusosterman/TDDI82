@@ -126,13 +126,13 @@ int CountedPtr<T>::use_count()
 }
 
 template <typename T>
-bool CountedPtr<T>::operator==(CountedPtr<T> rhs)
+bool CountedPtr<T>::operator==(CountedPtr<T> rhs) const
 {
     return (this->get() == rhs.get());
 }
 
 template <typename T>
-bool CountedPtr<T>::operator!=(CountedPtr<T> rhs)
+bool CountedPtr<T>::operator!=(CountedPtr<T> rhs) const
 {
     return !(this->get() == rhs.get());
 }

@@ -18,8 +18,8 @@ public:
     CountedPtr<T>& operator=(std::nullptr_t n_ptr);
     T& operator*() const;
     T* operator->() const;
-    bool operator==(CountedPtr<T> rhs);
-    bool operator!=(CountedPtr<T> rhs);
+    bool operator==(CountedPtr<T> rhs) const;
+    bool operator!=(CountedPtr<T> rhs) const;
 
     bool operator==(T* rhs);
     bool operator!=(T* rhs);
