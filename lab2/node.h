@@ -1,19 +1,21 @@
 #ifndef NODE_H_
 #define NODE_H_
 
+#include "counted_ptr.h"
+
 #include <vector>
 
 class Node
 {
 public:
-    
+
     Node(int value = 0);
 
-    void insert(Node* node);
-    void remove(Node* node);
+    void insert(CountedPtr<Node> node);
+    void remove(CountedPtr<Node> node);
 
-    std::vector<Node*>::const_iterator begin() const;
-    std::vector<Node*>::const_iterator end() const;
+    std::vector<CountedPtr<Node>>::const_iterator begin() const;
+    std::vector<CountedPtr<Node>>::const_iterator end() const;
 
 public:
 
@@ -21,10 +23,11 @@ public:
 
 private:
 
-    std::vector<Node*> neighbours { };
+    std::vector<CountedPtr<Node>> neighbours { };
 
 };
 
-std::vector<Node*> get_all_nodes(Node* root);
+std::vector<Node*> get_all_nodes(CountedPtr<Node> root);
+
 
 #endif

@@ -1,6 +1,5 @@
 #include "counted_ptr.h"
 
-
 template <typename T>
 CountedPtr<T>::CountedPtr(T* ptr)
     : ptr{ptr}, count{nullptr}

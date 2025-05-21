@@ -9,7 +9,7 @@ Node::Node(int value)
 {
 }
 
-void Node::insert(Node* node)
+void Node::insert(CountedPtr<Node> node)
 {
     auto it = std::find(neighbours.begin(), neighbours.end(), node);
 
@@ -20,24 +20,24 @@ void Node::insert(Node* node)
     }
 }
 
-void Node::remove(Node* node)
+void Node::remove(CountedPtr<Node> node)
 {
     // om länken finns: ta bort den, annars: gör ingenting
     auto it = std::remove(neighbours.begin(), neighbours.end(), node);
     neighbours.erase(it, neighbours.end());
 }
 
-std::vector<Node*>::const_iterator Node::begin() const
+std::vector<CountedPtr<Node>>::const_iterator Node::begin() const
 {
     return neighbours.cbegin();
 }
 
-std::vector<Node*>::const_iterator Node::end() const
+std::vector<CountedPtr<Node>>::const_iterator Node::end() const
 {
     return neighbours.cend();
 }
 
-std::vector<Node*> get_all_nodes(Node* root)
+std::vector<Node*> get_all_nodes(CountedPtr<Node> root)
 {
     // Denna funktion går igenom alla noder och lägger in dem i `nodes` vektorn.
     // Notera: för att detta ska gå att göra så måste den hålla koll på vilka
@@ -58,12 +58,12 @@ std::vector<Node*> get_all_nodes(Node* root)
     // (vilket counted_ptr inte har), så här måste vi använda vanliga pekare fortfarande.
 
     std::set<Node*> visited { };
-    std::queue<Node*> to_visit { };
+    std::queue<CountedPtr<Node>> to_visit { };
 
     to_visit.push(root);
     while (!to_visit.empty())
     {
-        Node* node { to_visit.front() };
+        Node* node { to_visit.front().get() };
         to_visit.pop(); // nu blir noden besökt, så den tas bort
 
         if (visited.count(node) == 0)
@@ -72,8 +72,10 @@ std::vector<Node*> get_all_nodes(Node* root)
             nodes.push_back(node);
 
             // vi lägger till alla grannar till `to_visit`
-            for (Node* next : *node)
-                to_visit.push(next);
+            for (const CountedPtr<Node>& next_ptr : *node)
+            {
+                to_visit.push(next_ptr);
+            }
         }
     }
 

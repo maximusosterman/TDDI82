@@ -1,16 +1,15 @@
 #include "node.h"
-#include "counted_ptr.h"
 
 #include <iostream>
 
-Node* create_example()
+CountedPtr<Node> create_example()
 {
-    Node* n0 { new Node { 0 } };
-    Node* n1 { new Node { 1 } };
-    Node* n2 { new Node { 2 } };
-    Node* n3 { new Node { 3 } };
-    Node* n4 { new Node { 4 } };
-    Node* n5 { new Node { 5 } };
+    CountedPtr<Node> n0 { new Node{0} };
+    CountedPtr<Node> n1 { new Node{1} };
+    CountedPtr<Node> n2 { new Node{2} };
+    CountedPtr<Node> n3 { new Node{3} };
+    CountedPtr<Node> n4 { new Node{4} };
+    CountedPtr<Node> n5 { new Node{5} };
 
     n0->insert(n1);
     n0->insert(n2);
@@ -34,7 +33,7 @@ void print_nodes(std::vector<Node*> nodes)
 
 int main()
 {
-    Node* root { create_example() };
+    CountedPtr<Node> root { create_example() };
     std::vector<Node*> nodes { get_all_nodes(root) };
 
     std::cout << "After insertions: " << std::endl;

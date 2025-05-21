@@ -35,3 +35,5 @@ private:
     int* count;
 
 };
+
+#include "counted_ptr.tcc"
