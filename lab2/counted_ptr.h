@@ -24,7 +24,7 @@ public:
     bool operator==(T* rhs);
     bool operator!=(T* rhs);
 
-    T* get();
+    T* get() const;
     int use_count();
 
     void decrease_count();

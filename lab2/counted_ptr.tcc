@@ -109,7 +109,7 @@ T* CountedPtr<T>::operator->() const
 }
 
 template <typename T>
-T* CountedPtr<T>::get()
+T* CountedPtr<T>::get() const
 {
     return ptr;
 }
