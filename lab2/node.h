@@ -5,29 +5,34 @@
 
 #include <vector>
 
+template <typename T>
 class Node
 {
 public:
 
-    Node(int value = 0);
+    Node(T value = 0);
 
-    void insert(CountedPtr<Node> node);
-    void remove(CountedPtr<Node> node);
+    void insert(CountedPtr<Node<T>> node);
+    void remove(CountedPtr<Node<T>> node);
 
-    std::vector<CountedPtr<Node>>::const_iterator begin() const;
-    std::vector<CountedPtr<Node>>::const_iterator end() const;
+    typename std::vector<CountedPtr<Node<T>>>::const_iterator begin() const;
+    typename std::vector<CountedPtr<Node<T>>>::const_iterator end() const;
 
 public:
 
-    int value { };
+    T value { };
 
 private:
 
-    std::vector<CountedPtr<Node>> neighbours { };
+    std::vector<CountedPtr<Node<T>>> neighbours { };
 
 };
 
-std::vector<CountedPtr<Node>> get_all_nodes(CountedPtr<Node> root);
+template <typename T>
+std::vector<CountedPtr<Node<T>>> get_all_nodes(CountedPtr<Node<T>> root);
 
+
+
+#include "node.tcc"
 
 #endif

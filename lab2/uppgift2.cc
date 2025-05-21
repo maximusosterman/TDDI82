@@ -2,14 +2,14 @@
 
 #include <iostream>
 
-CountedPtr<Node> create_example()
+CountedPtr<Node<std::string>> create_example()
 {
-    CountedPtr<Node> n0 { new Node{0} };
-    CountedPtr<Node> n1 { new Node{1} };
-    CountedPtr<Node> n2 { new Node{2} };
-    CountedPtr<Node> n3 { new Node{3} };
-    CountedPtr<Node> n4 { new Node{4} };
-    CountedPtr<Node> n5 { new Node{5} };
+    CountedPtr<Node<std::string>> n0 { new Node<std::string>{"0"} };
+    CountedPtr<Node<std::string>> n1 { new Node<std::string>{"1"} };
+    CountedPtr<Node<std::string>> n2 { new Node<std::string>{"2"} };
+    CountedPtr<Node<std::string>> n3 { new Node<std::string>{"3"} };
+    CountedPtr<Node<std::string>> n4 { new Node<std::string>{"4"} };
+    CountedPtr<Node<std::string>> n5 { new Node<std::string>{"5"} };
 
     n0->insert(n1);
     n0->insert(n2);
@@ -22,9 +22,10 @@ CountedPtr<Node> create_example()
     return n0;
 }
 
-void print_nodes(std::vector<CountedPtr<Node>> nodes)
+template <typename T>
+void print_nodes(std::vector<CountedPtr<Node<T>>> nodes)
 {
-    for (CountedPtr<Node> node : nodes)
+    for (CountedPtr<Node<T>> node : nodes)
     {
         std::cout << node.get()->value << " ";
     }
@@ -33,8 +34,8 @@ void print_nodes(std::vector<CountedPtr<Node>> nodes)
 
 int main()
 {
-    CountedPtr<Node> root { create_example() };
-    std::vector<CountedPtr<Node>> nodes { get_all_nodes(root) };
+    CountedPtr<Node<std::string>> root { create_example() };
+    std::vector<CountedPtr<Node<std::string>>> nodes { get_all_nodes(root) };
 
     std::cout << "After insertions: " << std::endl;
     print_nodes(nodes);

@@ -1,15 +1,15 @@
-#include "node.h"
-
 #include <algorithm>
 #include <queue>
 #include <set>
 
-Node::Node(int value)
+template <typename T>
+Node<T>::Node(T value)
     : value { value }
 {
 }
 
-void Node::insert(CountedPtr<Node> node)
+template <typename T>
+void Node<T>::insert(CountedPtr<Node<T>> node)
 {
     auto it = std::find(neighbours.begin(), neighbours.end(), node);
 
@@ -19,25 +19,30 @@ void Node::insert(CountedPtr<Node> node)
         neighbours.push_back(node);
     }
 }
-
-void Node::remove(CountedPtr<Node> node)
+template <typename T>
+void Node<T>::remove(CountedPtr<Node<T>> node)
 {
     // om länken finns: ta bort den, annars: gör ingenting
     auto it = std::remove(neighbours.begin(), neighbours.end(), node);
     neighbours.erase(it, neighbours.end());
 }
 
-std::vector<CountedPtr<Node>>::const_iterator Node::begin() const
+template <typename T>
+typename std::vector<CountedPtr<Node<T>>>::const_iterator Node<T>::begin() const
 {
     return neighbours.cbegin();
 }
 
-std::vector<CountedPtr<Node>>::const_iterator Node::end() const
+
+template <typename T>
+typename std::vector<CountedPtr<Node<T>>>::const_iterator Node<T>::end() const
 {
     return neighbours.cend();
 }
 
-std::vector<CountedPtr<Node>> get_all_nodes(CountedPtr<Node> root)
+
+template <typename T>
+std::vector<CountedPtr<Node<T>>> get_all_nodes(CountedPtr<Node<T>> root)
 {
     // Denna funktion går igenom alla noder och lägger in dem i `nodes` vektorn.
     // Notera: för att detta ska gå att göra så måste den hålla koll på vilka
@@ -52,18 +57,18 @@ std::vector<CountedPtr<Node>> get_all_nodes(CountedPtr<Node> root)
     // noder som redan har besökts, och en std::vector håller koll på vilka noder
     // som ska besökas härnäst.
 
-    std::vector<CountedPtr<Node>> nodes { };
+    std::vector<CountedPtr<Node<T>>> nodes { };
 
     // Notera att std::set kräver att datatypen går att jämföra med operator<
     // (vilket counted_ptr inte har), så här måste vi använda vanliga pekare fortfarande.
 
-    std::set<Node*> visited { };
-    std::queue<CountedPtr<Node>> to_visit { };
+    std::set<Node<T>*> visited { };
+    std::queue<CountedPtr<Node<T>>> to_visit { };
 
     to_visit.push(root);
     while (!to_visit.empty())
     {
-        CountedPtr<Node> node { to_visit.front() };
+        CountedPtr<Node<T>> node { to_visit.front() };
         to_visit.pop(); // nu blir noden besökt, så den tas bort
 
         if (visited.count(node.get()) == 0)
@@ -72,7 +77,7 @@ std::vector<CountedPtr<Node>> get_all_nodes(CountedPtr<Node> root)
             nodes.push_back(node);
 
             // vi lägger till alla grannar till `to_visit`
-            for (const CountedPtr<Node>& next_ptr : *node)
+            for (const CountedPtr<Node<T>>& next_ptr : *node)
             {
                 to_visit.push(next_ptr);
             }
