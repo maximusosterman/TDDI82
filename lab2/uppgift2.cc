@@ -1,4 +1,5 @@
 #include "node.h"
+#include "counted_ptr.h"
 
 #include <iostream>
 
