@@ -37,7 +37,7 @@ std::vector<CountedPtr<Node>>::const_iterator Node::end() const
     return neighbours.cend();
 }
 
-std::vector<Node*> get_all_nodes(CountedPtr<Node> root)
+std::vector<CountedPtr<Node>> get_all_nodes(CountedPtr<Node> root)
 {
     // Denna funktion går igenom alla noder och lägger in dem i `nodes` vektorn.
     // Notera: för att detta ska gå att göra så måste den hålla koll på vilka
@@ -52,7 +52,7 @@ std::vector<Node*> get_all_nodes(CountedPtr<Node> root)
     // noder som redan har besökts, och en std::vector håller koll på vilka noder
     // som ska besökas härnäst.
 
-    std::vector<Node*> nodes { };
+    std::vector<CountedPtr<Node>> nodes { };
 
     // Notera att std::set kräver att datatypen går att jämföra med operator<
     // (vilket counted_ptr inte har), så här måste vi använda vanliga pekare fortfarande.
@@ -63,12 +63,12 @@ std::vector<Node*> get_all_nodes(CountedPtr<Node> root)
     to_visit.push(root);
     while (!to_visit.empty())
     {
-        Node* node { to_visit.front().get() };
+        CountedPtr<Node> node { to_visit.front() };
         to_visit.pop(); // nu blir noden besökt, så den tas bort
 
-        if (visited.count(node) == 0)
+        if (visited.count(node.get()) == 0)
         {
-            visited.insert(node);
+            visited.insert(node.get());
             nodes.push_back(node);
 
             // vi lägger till alla grannar till `to_visit`

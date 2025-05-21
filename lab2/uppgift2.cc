@@ -22,11 +22,11 @@ CountedPtr<Node> create_example()
     return n0;
 }
 
-void print_nodes(std::vector<Node*> nodes)
+void print_nodes(std::vector<CountedPtr<Node>> nodes)
 {
-    for (Node* node : nodes)
+    for (CountedPtr<Node> node : nodes)
     {
-        std::cout << node->value << " ";
+        std::cout << node.get()->value << " ";
     }
     std::cout << std::endl;
 }
@@ -34,7 +34,7 @@ void print_nodes(std::vector<Node*> nodes)
 int main()
 {
     CountedPtr<Node> root { create_example() };
-    std::vector<Node*> nodes { get_all_nodes(root) };
+    std::vector<CountedPtr<Node>> nodes { get_all_nodes(root) };
 
     std::cout << "After insertions: " << std::endl;
     print_nodes(nodes);

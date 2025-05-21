@@ -11,10 +11,10 @@ public:
     CountedPtr();
     CountedPtr(CountedPtr<T> const& copied_ptr);
     ~CountedPtr();
-    CountedPtr(CountedPtr<T>&& moved_ptr);
+    CountedPtr(CountedPtr&& other) noexcept;
 
     CountedPtr<T>& operator=(const CountedPtr<T>& other);
-    CountedPtr<T>& operator=(CountedPtr<T>&& other);
+    CountedPtr& operator=(CountedPtr&& other) noexcept;
     CountedPtr<T>& operator=(std::nullptr_t n_ptr);
     T& operator*() const;
     T* operator->() const;

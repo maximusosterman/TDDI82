@@ -27,7 +27,7 @@ private:
 
 };
 
-std::vector<Node*> get_all_nodes(CountedPtr<Node> root);
+std::vector<CountedPtr<Node>> get_all_nodes(CountedPtr<Node> root);
 
 
 #endif

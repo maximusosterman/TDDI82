@@ -1,5 +1,4 @@
 #include "counted_ptr.h"
-#include "counted_ptr.tcc"
 
 #include <iostream>
 #include <cassert>

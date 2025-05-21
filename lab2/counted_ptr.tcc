@@ -28,25 +28,25 @@ CountedPtr<T>::~CountedPtr()
 }
 
 template <typename T>
-CountedPtr<T>::CountedPtr(CountedPtr<T>&& moved_ptr)
-            : ptr {moved_ptr.ptr}, count {moved_ptr.count}
+CountedPtr<T>::CountedPtr(CountedPtr&& other) noexcept
+    : ptr(other.ptr), count(other.count)
 {
-    moved_ptr.ptr = nullptr;
-    moved_ptr.count = nullptr;
+    other.ptr = nullptr;
+    other.count = nullptr;
 }
 
+
 template <typename T>
-void CountedPtr<T>::decrease_count()
-{
+void CountedPtr<T>::decrease_count() {
     if (count) {
         --(*count);
         if (*count == 0) {
             delete ptr;
             delete count;
         }
+        count = nullptr;
+        ptr = nullptr;
     }
-    ptr = nullptr;
-    count = nullptr;
 }
 
 template <typename T>
@@ -75,14 +75,12 @@ CountedPtr<T>& CountedPtr<T>::operator=(const CountedPtr<T>& other)
 }
 
 template <typename T>
-CountedPtr<T>& CountedPtr<T>::operator=(CountedPtr<T>&& other)
+CountedPtr<T>& CountedPtr<T>::operator=(CountedPtr&& other) noexcept
 {
     if (this != &other) {
         decrease_count();
-
         ptr = other.ptr;
         count = other.count;
-
         other.ptr = nullptr;
         other.count = nullptr;
     }
