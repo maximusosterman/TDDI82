@@ -6,7 +6,7 @@
 #include <string>
 
 
-//Chat gpt wrote the tests
+//Chat gpt helped wrote the tests
 struct Dummy {
     int x;
     void hello() const { std::cout << "Hello, I am " << x << "\n"; }
