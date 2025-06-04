@@ -6,6 +6,9 @@
 
 
 //Chat gpt helped wrote the tests
+//
+// Promt "Vilka testafall bör täckas för att se att uppgiften funkar?"
+// Sen skrev vi tester baserat på den promten
 struct Dummy {
     int x;
     void hello() const { std::cout << "Hello, I am " << x << "\n"; }
