@@ -1,0 +1,1 @@
+Komplettering: Bra jobbat, bara lite småfix. Se komplettering i counted_ptr.h.

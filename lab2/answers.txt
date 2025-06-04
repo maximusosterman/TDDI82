@@ -1,0 +1,13 @@
+
+Fråga 1:
+Insert börjar med att kolla alla möjliga neighbors och kikar ifall det eventuellt finns
+dubletter. Om det är fallet kommer inte node bli insertad. Om inte, så läggs nodes längst besökas
+lägga i datamedlemslistan "neighbors"
+
+I varje nodeobjekt, så finns det start och- slutiteratorer som itererar igenom 
+datamedlemslistan som heter neighbors som innehåller alla Nodes som är länkde med
+ursprungs-Noden. Dessa iteratorer finns i h-filen för klassen.
+
+Fråga 2:
+Det blir en cyklisk referens (Ond cirkel). Alla objekt är beroende av varandra och när
+p tas bort blir det minnesläckor, för alla länkade objekt håller varandra vid liv <3. 
