@@ -1,7 +1,3 @@
-// Komplettering: Funktioner som är konstanta ska innebära att man inte kan ändra på datan pekar på.
-// Det ska finnas två varianter av ´operator*´, ´operator->´ och ´get()´
-// en för när pekaren är konstant och en när den inte är det.
-// och det är bara med hjälp av den icke-konstanta varianten som användaren får ändra på den underliggande datan.
 
 #include "counted_ptr.h"
 
