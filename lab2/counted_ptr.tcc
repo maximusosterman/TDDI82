@@ -98,13 +98,13 @@ CountedPtr<T>& CountedPtr<T>::operator=(std::nullptr_t)
 }
 
 template <typename T>
-T& CountedPtr<T>::operator*() const
+const T& CountedPtr<T>::operator*() const
 {
     return *ptr;
 }
 
 template <typename T>
-T* CountedPtr<T>::operator->() const
+const T* CountedPtr<T>::operator->() const
 {
     return ptr;
 }
@@ -122,7 +122,7 @@ T* CountedPtr<T>::operator->()
 }
 
 template <typename T>
-T* CountedPtr<T>::get() const
+const T* CountedPtr<T>::get() const
 {
     return ptr;
 }

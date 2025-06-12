@@ -24,8 +24,8 @@ public:
     CountedPtr<T>& operator=(const CountedPtr<T>& other);
     CountedPtr& operator=(CountedPtr&& other) noexcept;
     CountedPtr<T>& operator=(std::nullptr_t n_ptr);
-    T& operator*() const;
-    T* operator->() const;
+    const T& operator*() const;
+    const T* operator->() const;
     T& operator*();
     T* operator->();
     bool operator==(CountedPtr<T> rhs) const;
@@ -36,7 +36,7 @@ public:
     bool operator==(T* rhs);
     bool operator!=(T* rhs);
 
-    T* get() const;
+    const T* get() const;
     T* get();
     int use_count();
 
